@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: hack-by-throns
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn viewer_app:app --bind 0.0.0.0:$PORT

@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>NCRP - Master Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
+    <style> .nav { display:flex; gap:1rem; align-items:center; } table { width:100%; } </style>
+  </head>
+  <body>
+    <header>
+      <nav class="nav">
+        <strong>NCRP Complaint Automation</strong>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('extract') }}">Extract & View PDF</a>
+        <a href="{{ url_for('download_master') }}">Download Master Excel</a>
+      </nav>
+    </header>
+
+    <main>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="card {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <h3>Master Complaints</h3>
+      {% if complaints %}
+        <table>
+          <thead>
+            <tr>
+              <th>Complaint_ID</th><th>Complaint_Date</th><th>Incident_Date</th><th>Category</th><th>District</th><th>State</th><th>Amount_Lost</th><th>Status</th><th>created_at</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in complaints %}
+              <tr>
+                <td>{{ c.Complaint_ID }}</td>
+                <td>{{ c.Complaint_Date }}</td>
+                <td>{{ c.Incident_Date }}</td>
+                <td>{{ c.Category }}</td>
+                <td>{{ c.District }}</td>
+                <td>{{ c.State }}</td>
+                <td>{{ c.Amount_Lost }}</td>
+                <td>{{ c.Status }}</td>
+                <td>{{ c.created_at }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No complaints yet.</p>
+      {% endif %}
+    </main>
+  </body>
+</html>

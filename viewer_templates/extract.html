@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>NCRP - Extract & View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
+  </head>
+  <body>
+    <header>
+      <nav style="display:flex; gap:1rem; align-items:center;">
+        <strong>NCRP Complaint Automation</strong>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('extract') }}">Extract & View PDF</a>
+      </nav>
+    </header>
+
+    <main>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="card {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <h3>Upload a PDF to Extract</h3>
+      <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf" required>
+        <button type="submit">Upload & Extract</button>
+      </form>
+
+      {% if message %}
+        <p><strong>{{ message }}</strong></p>
+      {% endif %}
+
+      {% if extracted %}
+        <h4>Extracted Data</h4>
+        <form method="post" action="{{ url_for('save_complaint') }}">
+          <table>
+            <tbody>
+              {% for key, value in extracted.items() %}
+                <tr>
+                  <th>{{ key }}</th>
+                  <td>
+                    <input name="{{ key }}" value="{{ value }}" style="width:100%">
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <p>
+            <button type="submit">Save to Master</button>
+            <a href="{{ url_for('home') }}"><button type="button">Cancel</button></a>
+          </p>
+        </form>
+      {% endif %}
+    </main>
+  </body>
+</html>

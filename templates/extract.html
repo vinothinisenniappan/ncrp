@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Extract & View - NCRP Complaint Automation Tool{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="text-center mb-4">Extract & View Complaints</h1>
+    
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        <div class="mb-3">
+            <label for="fileInput" class="form-label">Upload NCRP Complaint File</label>
+            <input type="file" class="form-control" id="fileInput" name="file" 
+                   accept=".pdf,.csv,.xlsx,.xls" required>
+            <div class="form-text">Accepted formats: PDF, CSV, XLSX</div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100">
+            Upload & Extract
+        </button>
+    </form>
+
+    {% if message %}
+    <div class="alert alert-{{ 'danger' if 'error' in message.lower() else 'warning' }} mt-3">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    {% if extracted %}
+    <div class="mt-4">
+        <h3>Extracted Data</h3>
+        <form method="post" action="{{ url_for('save_complaint') }}" id="saveForm">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%;">Complaint ID</th>
+                            <td>
+                                <input type="text" name="Complaint_ID" class="form-control" 
+                                       value="{{ extracted.get('Complaint_ID', '') }}" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Date and Time</th>
+                            <td>
+                                <input type="text" name="Complaint_Date" class="form-control" 
+                                       value="{{ extracted.get('Complaint_Date', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Incident Date</th>
+                            <td>
+                                <input type="text" name="Incident_Date" class="form-control" 
+                                       value="{{ extracted.get('Incident_Date', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Type of Cybercrime</th>
+                            <td>
+                                <input type="text" name="Category" class="form-control" 
+                                       value="{{ extracted.get('Category', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Platform Involved</th>
+                            <td>
+                                <input type="text" name="Sub_Category" class="form-control" 
+                                       value="{{ extracted.get('Sub_Category', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>District</th>
+                            <td>
+                                <input type="text" name="District" class="form-control" 
+                                       value="{{ extracted.get('District', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>State</th>
+                            <td>
+                                <input type="text" name="State" class="form-control" 
+                                       value="{{ extracted.get('State', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Amount Lost</th>
+                            <td>
+                                <input type="text" name="Amount_Lost" class="form-control" 
+                                       value="{{ extracted.get('Amount_Lost', '') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Current Status</th>
+                            <td>
+                                <input type="text" name="Status" class="form-control" 
+                                       value="{{ extracted.get('Status', 'Registered') }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Source File Type</th>
+                            <td>
+                                <input type="text" name="Source_File_Type" class="form-control" 
+                                       value="{{ extracted.get('Source_File_Type', 'PDF') }}" readonly>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100 mt-3">
+                Save to Master Excel
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

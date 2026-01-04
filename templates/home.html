@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Home - NCRP Complaint Automation Tool{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="text-center mb-4">Master Complaints Database</h1>
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <strong>Total Complaints: {{ complaints|length }}</strong>
+        </div>
+        <a href="{{ url_for('download_excel') }}" class="btn btn-secondary">
+            Download Master Excel
+        </a>
+    </div>
+
+    {% if complaints %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Complaint ID</th>
+                    <th>Date and Time</th>
+                    <th>Complainant Details</th>
+                    <th>Type of Cybercrime</th>
+                    <th>Platform Involved</th>
+                    <th>Amount Lost</th>
+                    <th>Current Status</th>
+                    <th>Source File Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint.get('Complaint_ID', 'Not Available') }}</td>
+                    <td>{{ complaint.get('Complaint_Date', 'Not Available') }}</td>
+                    <td>
+                        {% set district = complaint.get('District', '') %}
+                        {% set state = complaint.get('State', '') %}
+                        {% if district != 'Not Available' and state != 'Not Available' %}
+                            {{ district }}, {{ state }}
+                        {% elif district != 'Not Available' %}
+                            {{ district }}
+                        {% elif state != 'Not Available' %}
+                            {{ state }}
+                        {% else %}
+                            Not Available
+                        {% endif %}
+                    </td>
+                    <td>{{ complaint.get('Category', 'Not Available') }}</td>
+                    <td>
+                        {% set sub_cat = complaint.get('Sub_Category', 'Not Available') %}
+                        {% if 'UPI' in sub_cat %}
+                            UPI
+                        {% elif 'Social Media' in sub_cat %}
+                            Social Media
+                        {% else %}
+                            {{ sub_cat }}
+                        {% endif %}
+                    </td>
+                    <td>{{ complaint.get('Amount_Lost', 'Not Available') }}</td>
+                    <td>{{ complaint.get('Status', 'Registered') }}</td>
+                    <td>{{ complaint.get('Source_File_Type', 'Not Available') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p class="mb-0">No complaints found. <a href="{{ url_for('extract') }}">Extract and add your first complaint</a>.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
